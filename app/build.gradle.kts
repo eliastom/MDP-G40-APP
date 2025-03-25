@@ -1,7 +1,10 @@
+
+
 plugins {
     alias(libs.plugins.android.application)
     alias(libs.plugins.kotlin.android)
     alias(libs.plugins.kotlin.compose)
+    alias(libs.plugins.google.services) // Add this line
 }
 
 android {
@@ -56,4 +59,24 @@ dependencies {
     androidTestImplementation(libs.androidx.ui.test.junit4)
     debugImplementation(libs.androidx.ui.tooling)
     debugImplementation(libs.androidx.ui.test.manifest)
+
+    // Jetpack Compose
+    implementation (libs.androidx.activity.compose.v180)
+    implementation (libs.ui)
+    implementation (libs.material3)
+    implementation (libs.androidx.runtime.livedata)
+    implementation (libs.androidx.navigation.compose)
+
+    // Firebase
+    implementation (platform(libs.firebase.bom))
+    implementation (libs.firebase.auth.ktx)
+    implementation (libs.firebase.firestore.ktx)
+
+    // Koin for dependency injection
+    implementation (libs.koin.android)
+    implementation (libs.koin.androidx.compose)
+
+    // Coroutines for async operations
+    implementation (libs.kotlinx.coroutines.android)
+
 }
