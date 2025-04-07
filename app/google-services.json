@@ -1,0 +1,29 @@
+{
+  "project_info": {
+    "project_number": "648122825346",
+    "project_id": "reflectlyplus",
+    "storage_bucket": "reflectlyplus.firebasestorage.app"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:648122825346:android:aebb9f602de47787ce129b",
+        "android_client_info": {
+          "package_name": "com.g40.reflectly"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyCY_KDDKgHsUJTXTzksnIFfg5uL424K3-M"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

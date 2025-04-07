@@ -5,6 +5,3 @@ plugins {
     alias(libs.plugins.google.services) apply false
 }
 
-tasks.register<Delete>("clean") {
-    delete(rootProject.buildDir)
-}
