@@ -19,6 +19,6 @@ dependencyResolutionManagement {
     }
 }
 
-rootProject.name = "G40"
+rootProject.name = "Reflectly+"
 include(":app")
  
