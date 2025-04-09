@@ -1,32 +1,32 @@
 package com.g40.reflectly
 
-
+import android.os.Build
 import android.os.Bundle
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.activity.enableEdgeToEdge
-import androidx.compose.foundation.layout.fillMaxSize
-import androidx.compose.foundation.layout.padding
-import androidx.compose.material3.Scaffold
-import androidx.compose.material3.Text
-import androidx.compose.runtime.Composable
-import androidx.compose.ui.Modifier
-import androidx.compose.ui.tooling.preview.Preview
-import androidx.lifecycle.viewmodel.compose.viewModel
-import com.g40.reflectly.ui.theme.ReflectlyTheme
-import com.g40.reflectly.ui.screens.JournalScreen
-import com.g40.reflectly.viewmodel.JournalViewModel
+import androidx.annotation.RequiresApi
+import androidx.navigation.compose.rememberNavController
+import com.g40.reflectly.ui.navigation.AppNavGraph
 
 class MainActivity : ComponentActivity() {
+
+    // Ensures this function only runs on Android 8.0 (API 26) and above
+    @RequiresApi(Build.VERSION_CODES.O)
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
+
+        // Enables edge-to-edge display (content behind status/navigation bars)
         enableEdgeToEdge()
+
+        // Sets the main UI content using Jetpack Compose
         setContent {
-            val viewModel: JournalViewModel = viewModel()
-            ReflectlyTheme {
-                JournalScreen(viewModel = viewModel)
-            }
+
+            // Creates and remembers a NavController instance for app navigation
+            val navController = rememberNavController()
+
+            // Launches the app's navigation graph which manages all composable screens
+            AppNavGraph(navController = navController)
         }
     }
 }
-
