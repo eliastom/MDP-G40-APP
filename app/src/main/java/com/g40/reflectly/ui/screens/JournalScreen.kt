@@ -5,41 +5,48 @@ import androidx.compose.material3.*
 import androidx.compose.runtime.*
 import androidx.compose.ui.*
 import androidx.compose.ui.unit.dp
-import com.g40.reflectly.data.utils.AuthGate
-import com.g40.reflectly.viewmodel.NewJournalViewModel
+import com.g40.reflectly.viewmodel.JournalViewModel
+import java.time.LocalDate
+import java.time.format.DateTimeFormatter
 
 @Composable
-fun NewJournalScreen(
+fun JournalScreen(
     selectedDate: String,
-    viewModel: NewJournalViewModel,
+    viewModel: JournalViewModel,
     onNavigate: () -> Unit
 ) {
-    AuthGate(
-        onAuthReady = {
             JournalScreenContent(selectedDate, viewModel, onNavigate)
-        }
-    )
 }
 
 @Composable
 private fun JournalScreenContent(
     selectedDate: String,
-    viewModel: NewJournalViewModel,
+    viewModel: JournalViewModel,
     onNavigate: () -> Unit
 ) {
     val journalState by viewModel.entry.collectAsState()
     var text by remember { mutableStateOf("") }
+    var isInitialLoad by remember { mutableStateOf(true) }
 
-    // Load entry only once when entering screen
+    // Load entry when screen is shown
     LaunchedEffect(selectedDate) {
         viewModel.loadEntry(selectedDate)
+        isInitialLoad = true // Reset this whenever date changes
     }
 
-    // Populate text field when entry is loaded
+    // Only pre-fill if the user hasn't typed anything yet
     LaunchedEffect(journalState) {
         journalState?.let {
-            text = it.content
+            // Only update if the text hasn't been modified manually
+            if (text.isBlank() || text == it.content) {
+                text = it.content
+            }
         }
+    }
+
+
+    val formattedDate = remember(selectedDate) {
+        LocalDate.parse(selectedDate).format(DateTimeFormatter.ofPattern("EEEE, MMMM d"))
     }
 
     Column(
@@ -48,12 +55,26 @@ private fun JournalScreenContent(
             .padding(16.dp),
         verticalArrangement = Arrangement.SpaceBetween
     ) {
+        Text(
+            text = formattedDate,
+            style = MaterialTheme.typography.titleMedium,
+            modifier = Modifier.padding(bottom = 8.dp)
+        )
+
+        val isToday = selectedDate == LocalDate.now().toString()
+        val placeholderText = when {
+            isToday -> "Write your journal..."
+            journalState == null || journalState?.content.isNullOrBlank() -> "No journal written for this day."
+            else -> ""
+        }
+
         TextField(
             value = text,
             onValueChange = { text = it },
-            placeholder = { Text("Write your journal...") },
+            placeholder = { Text(placeholderText) },
             modifier = Modifier.fillMaxWidth()
         )
+
 
         Button(onClick = onNavigate) {
             Text("Back")

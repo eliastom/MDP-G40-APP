@@ -1,72 +1,68 @@
 package com.g40.reflectly.ui.navigation
 
-import android.os.Build
-import androidx.annotation.RequiresApi
+import HomeScreen
 import androidx.compose.runtime.Composable
 import androidx.lifecycle.viewmodel.compose.viewModel
-
 import androidx.navigation.NavHostController
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
-
 import com.g40.reflectly.ui.screens.*
-import com.g40.reflectly.ui.theme.ReflectlyTheme
 import com.g40.reflectly.viewmodel.*
-
+import com.g40.reflectly.ui.theme.ReflectlyTheme
 import java.time.LocalDate
 
-@RequiresApi(Build.VERSION_CODES.O) // Requires API 26+ because of LocalDate
+
 @Composable
 fun AppNavGraph(navController: NavHostController) {
-    val today = LocalDate.now().toString() // Get today's date as a string
+    val today = LocalDate.now().toString()
 
-    // Define the navigation graph starting at LoadingScreen
-    NavHost(navController = navController, startDestination = "LoadingScreen") {
+    NavHost(navController = navController, startDestination = "loading") {
 
-        // Loading screen: decides where to go next based on login status
-        composable("LoadingScreen") {
+        composable("loading") {
             LoadingScreen { isLoggedIn ->
-                val target = if (isLoggedIn) "HomeScreen" else "SignUpScreen"
+                val target = if (isLoggedIn) "home" else "signup"
                 navController.navigate(target) {
-                    popUpTo("LoadingScreen") { inclusive = true } // Clear backstack
+                    popUpTo("loading") { inclusive = true }
                 }
             }
         }
 
-        // Sign-up screen
-        composable("SignUpScreen") {
-            val authViewModel: AuthViewModel = viewModel() // ViewModel for sign-up logic
+        composable("signup") {
+            val authViewModel: AuthViewModel = viewModel()
             ReflectlyTheme {
                 SignUpScreen(
                     viewModel = authViewModel,
                     onNavigate = {
-                        navController.navigate("HomeScreen") {
-                            popUpTo("SignUpScreen") { inclusive = true } // Clear backstack
+                        navController.navigate("home") {
+                            popUpTo("signup") { inclusive = true }
                         }
                     }
                 )
             }
         }
 
-        // Home screen
-        composable("HomeScreen") {
-            val homeScreenViewModel: HomeScreenViewModel = viewModel() // ViewModel for home logic
+        composable("home") {
+            val homeScreenViewModel: HomeScreenViewModel = viewModel()
             ReflectlyTheme {
-                HomeScreen(viewModel = homeScreenViewModel) {
-                    navController.navigate("NewJournalScreen/$today") // Navigate with today's date
-                }
+                HomeScreen(
+                    viewModel = homeScreenViewModel,
+                    onDateSelected = { date ->
+                        navController.navigate("journal/$date")
+                    }
+                )
             }
         }
 
-        // New Journal screen with date argument
-        composable("NewJournalScreen/{date}") { backStackEntry ->
+        composable("journal/{date}") { backStackEntry ->
             val date = backStackEntry.arguments?.getString("date") ?: today
-            val journalViewModel: NewJournalViewModel = viewModel() // ViewModel for journal screen
+            val journalViewModel: JournalViewModel = viewModel()
             ReflectlyTheme {
-                NewJournalScreen(
+                JournalScreen(
                     selectedDate = date,
                     viewModel = journalViewModel,
-                    onNavigate = { navController.navigate("HomeScreen") } // Back to home
+                    onNavigate = {
+                        navController.popBackStack()
+                    }
                 )
             }
         }

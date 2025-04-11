@@ -2,15 +2,16 @@ package com.g40.reflectly.viewmodel
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.g40.reflectly.data.firestore.FirestoreRepository
+import com.g40.reflectly.data.JournalRepository
+import com.g40.reflectly.data.firestore.FirestoreJournalRepository
 import com.g40.reflectly.data.models.JournalEntry
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.collectLatest
 import kotlinx.coroutines.launch
 
-class NewJournalViewModel(
-    private val repository: FirestoreRepository = FirestoreRepository()
+class JournalViewModel(
+    private val repository: JournalRepository = FirestoreJournalRepository() // Now using interface!
 ) : ViewModel() {
 
     private val _entry = MutableStateFlow<JournalEntry?>(null)
@@ -30,7 +31,7 @@ class NewJournalViewModel(
             timestamp = System.currentTimeMillis()
         )
         viewModelScope.launch {
-            repository.saveJournalEntry(date, journal) // Pass date as ID
+            repository.saveJournalEntry(date, journal)
             _entry.value = journal
         }
     }
