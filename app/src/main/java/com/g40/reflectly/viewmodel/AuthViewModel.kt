@@ -9,18 +9,25 @@ import com.google.firebase.auth.FirebaseAuth
 class AuthViewModel : ViewModel() {
 
     // UI state for signup process (Idle, Loading, Success, Error)
-    var signUpState by mutableStateOf<AuthResult>(AuthResult.Idle)
-        private set // restrict external modification
+    enum class AuthAction { SIGN_UP, LOG_IN, NONE }
+
+    var currentAction by mutableStateOf(AuthAction.NONE)
+        private set
+
+    var authState by mutableStateOf<AuthResult>(AuthResult.Idle)
+        private set
+
 
     // Function to handle user sign-up using Firebase
     fun signUp(email: String, password: String) {
-        signUpState = AuthResult.Loading // set state to loading
+        currentAction = AuthAction.SIGN_UP
+        authState = AuthResult.Loading // set state to loading
 
         FirebaseAuth.getInstance()
             .createUserWithEmailAndPassword(email, password)
             .addOnCompleteListener { task ->
                 // Update state based on success or failure
-                signUpState = if (task.isSuccessful) {
+                authState = if (task.isSuccessful) {
                     AuthResult.Success
                 } else {
                     AuthResult.Error(task.exception?.message ?: "Unknown error")
@@ -29,8 +36,30 @@ class AuthViewModel : ViewModel() {
     }
 
     // Resets the signup state to Idle (e.g., after navigating away)
+
+
+    fun logIn(email: String,password: String) {
+        currentAction = AuthAction.LOG_IN
+        authState = AuthResult.Loading
+
+        FirebaseAuth.getInstance()
+            .signInWithEmailAndPassword(email, password)
+            .addOnCompleteListener { task ->
+                authState = if (task.isSuccessful) {
+                    AuthResult.Success
+                } else {
+                    AuthResult.Error(task.exception?.message ?: "Unknown error")
+                }
+            }
+    }
+
+    fun logOut(onLogOut: () -> Unit) {
+        FirebaseAuth.getInstance().signOut()
+        onLogOut()
+    }
+
     fun resetState() {
-        signUpState = AuthResult.Idle
+        authState = AuthResult.Idle
     }
 }
 

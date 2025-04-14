@@ -16,55 +16,104 @@ import java.time.LocalDate
 fun AppNavGraph(navController: NavHostController) {
     val today = LocalDate.now().toString()
 
-    NavHost(navController = navController, startDestination = "loading") {
+    NavHost(navController = navController, startDestination = Screen.Loading.route) {
 
-        composable("loading") {
+        composable(Screen.Loading.route) {
             LoadingScreen { isLoggedIn ->
-                val target = if (isLoggedIn) "home" else "signup"
+                val target = if (isLoggedIn) Screen.Home.route else Screen.Welcome.route
                 navController.navigate(target) {
-                    popUpTo("loading") { inclusive = true }
+                    popUpTo(Screen.Loading.route) { inclusive = true }
                 }
             }
         }
 
-        composable("signup") {
+        composable(Screen.Welcome.route) {
+            WelcomeScreen(
+                onLogin = {
+                    navController.navigate(Screen.SignIn.route)
+                },
+                onSignUp = {
+                    navController.navigate(Screen.SignUp.route)
+                }
+            )
+        }
+
+        composable(Screen.SignIn.route) {
+            val authViewModel: AuthViewModel = viewModel()
+            LogInScreen(
+                viewModel = authViewModel,
+                onLogIn = {
+                    navController.navigate(Screen.Home.route) {
+                        popUpTo(Screen.SignIn.route) { inclusive = true }
+                    }
+                },
+                onBack = {
+                    navController.popBackStack()
+                }
+            )
+        }
+
+        composable(Screen.SignUp.route) {
             val authViewModel: AuthViewModel = viewModel()
             ReflectlyTheme {
                 SignUpScreen(
                     viewModel = authViewModel,
-                    onNavigate = {
-                        navController.navigate("home") {
-                            popUpTo("signup") { inclusive = true }
+                    onSignUp = {
+                        navController.navigate(Screen.Home.route) {
+                            popUpTo(Screen.SignUp.route) { inclusive = true }
                         }
+                    },
+                    onBack = {
+                        navController.popBackStack()
                     }
                 )
             }
         }
 
-        composable("home") {
-            val homeScreenViewModel: HomeScreenViewModel = viewModel()
+        composable(Screen.Home.route) {
+            val authViewModel: AuthViewModel = viewModel()
+            val taskViewModel: TaskViewModel = viewModel()
             ReflectlyTheme {
                 HomeScreen(
-                    viewModel = homeScreenViewModel,
+                    authViewModel = authViewModel,
+                    taskViewModel = taskViewModel,
                     onDateSelected = { date ->
-                        navController.navigate("journal/$date")
+                        navController.navigate(Screen.Journal.withArgs(date))
+                    },
+                    onLogOut = {
+                        navController.navigate(Screen.Welcome.route) {
+                            popUpTo(Screen.Home.route) { inclusive = true }
+                        }
+                    },
+                    onAddTask = {
+                        navController.navigate(Screen.NewTask.route)
                     }
                 )
             }
         }
 
-        composable("journal/{date}") { backStackEntry ->
+        composable(Screen.Journal.route) { backStackEntry ->
             val date = backStackEntry.arguments?.getString("date") ?: today
             val journalViewModel: JournalViewModel = viewModel()
             ReflectlyTheme {
                 JournalScreen(
                     selectedDate = date,
                     viewModel = journalViewModel,
-                    onNavigate = {
+                    onBack = {
                         navController.popBackStack()
                     }
                 )
             }
+        }
+
+        composable(Screen.NewTask.route) {
+            val taskViewModel: TaskViewModel = viewModel()
+            NewTaskScreen(
+                viewModel = taskViewModel,
+                onNavigation = {
+                    navController.popBackStack()
+                }
+            )
         }
     }
 }

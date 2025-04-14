@@ -12,7 +12,6 @@ import com.g40.reflectly.ui.navigation.AppNavGraph
 class MainActivity : ComponentActivity() {
 
     // Ensures this function only runs on Android 8.0 (API 26) and above
-    @RequiresApi(Build.VERSION_CODES.O)
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
 

@@ -17,6 +17,13 @@ import kotlinx.coroutines.delay
 fun LoadingScreen(
     onReady: (Boolean) -> Unit // Callback to notify if user is logged in
 ) {
+    LoadingScreenContent(onReady)
+}
+
+@Composable
+private fun LoadingScreenContent(
+    onReady: (Boolean) -> Unit
+) {
     val context = LocalContext.current // Get the current context (needed for Firebase check)
 
     // Side-effect that runs once when the composable enters composition

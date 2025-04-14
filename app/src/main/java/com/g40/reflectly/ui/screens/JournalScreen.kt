@@ -5,6 +5,7 @@ import androidx.compose.material3.*
 import androidx.compose.runtime.*
 import androidx.compose.ui.*
 import androidx.compose.ui.unit.dp
+import com.g40.reflectly.data.utils.DateUtils
 import com.g40.reflectly.viewmodel.JournalViewModel
 import java.time.LocalDate
 import java.time.format.DateTimeFormatter
@@ -13,16 +14,16 @@ import java.time.format.DateTimeFormatter
 fun JournalScreen(
     selectedDate: String,
     viewModel: JournalViewModel,
-    onNavigate: () -> Unit
+    onBack: () -> Unit
 ) {
-            JournalScreenContent(selectedDate, viewModel, onNavigate)
+            JournalScreenContent(selectedDate, viewModel, onBack)
 }
 
 @Composable
 private fun JournalScreenContent(
     selectedDate: String,
     viewModel: JournalViewModel,
-    onNavigate: () -> Unit
+    onBack: () -> Unit
 ) {
     val journalState by viewModel.entry.collectAsState()
     var text by remember { mutableStateOf("") }
@@ -46,7 +47,7 @@ private fun JournalScreenContent(
 
 
     val formattedDate = remember(selectedDate) {
-        LocalDate.parse(selectedDate).format(DateTimeFormatter.ofPattern("EEEE, MMMM d"))
+        DateUtils.formatDate(selectedDate)
     }
 
     Column(
@@ -76,7 +77,7 @@ private fun JournalScreenContent(
         )
 
 
-        Button(onClick = onNavigate) {
+        Button(onClick = onBack) {
             Text("Back")
         }
 
