@@ -7,7 +7,11 @@ import com.google.firebase.FirebaseApp
 class ReflectlyApp : Application() {
     override fun onCreate() {
         super.onCreate()
-        FirebaseApp.initializeApp(this)
-        Log.d("ReflectlyApp", "✅ Firebase initialized!")
+        val firebaseApp = FirebaseApp.initializeApp(this)
+        if (firebaseApp == null) {
+            Log.e("ReflectlyApp", "Firebase failed to initialize.")
+        } else {
+            Log.d("ReflectlyApp", "Firebase initialized successfully.")
+        }
     }
 }

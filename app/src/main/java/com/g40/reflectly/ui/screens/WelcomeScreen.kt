@@ -1,14 +1,19 @@
 package com.g40.reflectly.ui.screens
 
+import androidx.compose.foundation.Image
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.*
 import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.ColorFilter
+import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import com.g40.reflectly.R
+import com.g40.reflectly.ui.components.ReflectlyButton
 
 @Composable
 fun WelcomeScreen(
@@ -17,61 +22,83 @@ fun WelcomeScreen(
 ) {
     var loading by remember { mutableStateOf(false) }
 
-    Surface(
-        modifier = Modifier.fillMaxSize(),
-        color = MaterialTheme.colorScheme.background
-    ) {
+    Scaffold(
+        containerColor = MaterialTheme.colorScheme.background
+    ) { innerPadding ->
         Column(
             modifier = Modifier
                 .fillMaxSize()
-                .padding(24.dp),
+                .padding(innerPadding)
+                .padding(horizontal = 24.dp),
             verticalArrangement = Arrangement.SpaceBetween,
             horizontalAlignment = Alignment.CenterHorizontally
         ) {
-            Spacer(modifier = Modifier.height(50.dp))
+            Spacer(modifier = Modifier.height(200.dp))
 
-            Text(
-                text = "Reflectly+",
-                style = MaterialTheme.typography.headlineMedium,
-                fontWeight = FontWeight.Bold
-            )
+            Column(modifier = Modifier,
+                verticalArrangement = Arrangement.Center,
+                horizontalAlignment = Alignment.CenterHorizontally) {
+                Image(
+                    painter = painterResource(id = R.drawable.logo),
+                    contentDescription = "Reflectly Logo",
+                    modifier = Modifier
+                        .size(150.dp),
+                    colorFilter = ColorFilter.tint(MaterialTheme.colorScheme.primary)
+                )
 
-            Text(
-                text = "A daily journal for mindful living",
-                fontSize = 16.sp,
-                modifier = Modifier.padding(top = 8.dp)
-            )
+                Text(
+                    text = "Reflectly+",
+                    style = MaterialTheme.typography.displayLarge
+                )
+
+                Spacer(modifier = Modifier.height(8.dp))
+
+                Text(
+                    text = "A daily journal for mindful living",
+                    style = MaterialTheme.typography.bodyMedium.copy(
+                        color = MaterialTheme.colorScheme.tertiary
+                    )
+                )
+            }
 
             Spacer(modifier = Modifier.weight(1f))
 
-            Button(
+            ReflectlyButton(
                 onClick = {
                     loading = true
                     onLogin()
                 },
-                enabled = !loading,
-                shape = RoundedCornerShape(16.dp),
+                usePrimary = true,
                 modifier = Modifier
                     .fillMaxWidth()
                     .height(56.dp)
             ) {
-                Text("Log In")
+                Text(
+                    text = "Log In",
+                    style = MaterialTheme.typography.bodyMedium.copy(
+                        color = MaterialTheme.colorScheme.onPrimary
+                    )
+                )
             }
 
             Spacer(modifier = Modifier.height(16.dp))
 
-            OutlinedButton(
+            ReflectlyButton(
                 onClick = {
                     loading = true
                     onSignUp()
                 },
-                enabled = !loading,
-                shape = RoundedCornerShape(16.dp),
+                usePrimary = false,
                 modifier = Modifier
                     .fillMaxWidth()
                     .height(56.dp)
             ) {
-                Text("Sign Up")
+                Text(
+                    text = "Sign Up",
+                    style = MaterialTheme.typography.bodyMedium.copy(
+                        color = MaterialTheme.colorScheme.onBackground
+                    )
+                )
             }
 
             Spacer(modifier = Modifier.height(50.dp))

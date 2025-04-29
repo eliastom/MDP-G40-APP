@@ -8,7 +8,7 @@ import com.google.firebase.auth.FirebaseAuth
 
 class AuthViewModel : ViewModel() {
 
-    // UI state for signup process (Idle, Loading, Success, Error)
+    // UI state for authentication actions
     enum class AuthAction { SIGN_UP, LOG_IN, NONE }
 
     var currentAction by mutableStateOf(AuthAction.NONE)
@@ -17,16 +17,16 @@ class AuthViewModel : ViewModel() {
     var authState by mutableStateOf<AuthResult>(AuthResult.Idle)
         private set
 
+    // --- Authentication Logic ---
 
-    // Function to handle user sign-up using Firebase
+    // Handles user sign-up with Firebase
     fun signUp(email: String, password: String) {
         currentAction = AuthAction.SIGN_UP
-        authState = AuthResult.Loading // set state to loading
+        authState = AuthResult.Loading
 
         FirebaseAuth.getInstance()
             .createUserWithEmailAndPassword(email, password)
             .addOnCompleteListener { task ->
-                // Update state based on success or failure
                 authState = if (task.isSuccessful) {
                     AuthResult.Success
                 } else {
@@ -35,10 +35,8 @@ class AuthViewModel : ViewModel() {
             }
     }
 
-    // Resets the signup state to Idle (e.g., after navigating away)
-
-
-    fun logIn(email: String,password: String) {
+    // Handles user log-in with Firebase
+    fun logIn(email: String, password: String) {
         currentAction = AuthAction.LOG_IN
         authState = AuthResult.Loading
 
@@ -53,20 +51,23 @@ class AuthViewModel : ViewModel() {
             }
     }
 
+    // Handles user log-out
     fun logOut(onLogOut: () -> Unit) {
         FirebaseAuth.getInstance().signOut()
         onLogOut()
     }
 
+    // Resets authentication state back to Idle
     fun resetState() {
         authState = AuthResult.Idle
     }
 }
 
-// Represents the different states of the sign-up flow
+// --- Authentication Result Sealed Class ---
+// Represents the different states during authentication flow
 sealed class AuthResult {
-    object Idle : AuthResult()                  // Nothing happening yet
-    object Loading : AuthResult()               // Sign-up in progress
-    object Success : AuthResult()               // Sign-up succeeded
-    data class Error(val message: String) : AuthResult() // Sign-up failed with error message
+    object Idle : AuthResult()                // Nothing happening
+    object Loading : AuthResult()             // Authentication in progress
+    object Success : AuthResult()             // Authentication succeeded
+    data class Error(val message: String) : AuthResult() // Authentication failed
 }

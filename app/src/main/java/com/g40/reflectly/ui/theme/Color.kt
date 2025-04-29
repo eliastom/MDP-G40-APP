@@ -2,10 +2,19 @@ package com.g40.reflectly.ui.theme
 
 import androidx.compose.ui.graphics.Color
 
-val Purple80 = Color(0xFFD0BCFF)
-val PurpleGrey80 = Color(0xFFCCC2DC)
-val Pink80 = Color(0xFFEFB8C8)
+// Neutrals for Light Mode
+val PrimaryLight = Color(0xFF121212)
+val OnPrimaryLight = Color(0xFFFAFAFA)
+val SecondaryLight = Color(0xFFEEEEEE)
+val TertiaryLight = Color(0xFF868686)
+val BackgroundLight = Color(0xFFFAFAFA)
+val OnBackgroundLight = Color(0xFF121212)
 
-val Purple40 = Color(0xFF6650a4)
-val PurpleGrey40 = Color(0xFF625b71)
-val Pink40 = Color(0xFF7D5260)
+
+// Neutrals for Dark Mode
+val PrimaryDark = Color(0xFFFAFAFA)
+val OnPrimaryDark = Color(0xFF2C2C2C)
+val SecondaryDark = Color(0xFF121212)
+val TertiaryDark = Color(0xFF868686)
+val BackgroundDark = Color(0xFF2C2C2C)
+val OnBackgroundDark = Color(0xFFFAFAFA)
